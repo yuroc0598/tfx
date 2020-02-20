@@ -115,7 +115,7 @@ def _build_keras_model() -> tf.keras.Model:
       optimizer=tf.keras.optimizers.RMSprop(lr=0.0015),
       metrics=['sparse_categorical_accuracy']
   )
-  model.summary(print_fn=absl.logging.info)
+  absl.logging.info(model.summary())
   return model
 
 

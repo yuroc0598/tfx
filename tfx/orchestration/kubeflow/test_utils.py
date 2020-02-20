@@ -276,8 +276,9 @@ class BaseKubeflowTest(tf.test.TestCase):
     random.seed(datetime.datetime.now())
 
     choices = string.ascii_lowercase + string.digits
-    return '{}-{}'.format(datetime.datetime.now().strftime('%s'),
-                          ''.join([random.choice(choices) for _ in range(10)]))
+    result = ''.join([random.choice(choices) for _ in range(10)])
+    result = result + '-{}'.format(datetime.datetime.now().strftime('%s'))
+    return result
 
   def _delete_test_dir(self, test_id: Text):
     """Deletes files for this test including the module file and data files.

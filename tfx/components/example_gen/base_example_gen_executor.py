@@ -78,13 +78,16 @@ def _InputToSerializedExample(pipeline: beam.Pipeline,
                               input_dict: Dict[Text, List[types.Artifact]],
                               exec_properties: Dict[Text, Any],
                               split_pattern: Text) -> beam.pvalue.PCollection:
-  """Converts input to serialized TF examples."""
+  """Converts input proto to serialized Exmaple, if not already serialized."""
+  def _MaybeSerialize(x):
+    # Returns deterministic string as partition is based on it.
+    return x if isinstance(x, bytes) else x.SerializeToString(
+        deterministic=True)
+
   return (pipeline
           | 'InputSourceToExample' >> input_to_example(
               input_dict, exec_properties, split_pattern)
-          # Returns deterministic string as partition is based on it.
-          | 'SerializeDeterministically' >>
-          beam.Map(lambda x: x.SerializeToString(deterministic=True)))
+          | 'SerializeDeterministically' >> beam.Map(_MaybeSerialize))
 
 
 class BaseExampleGenExecutor(
@@ -115,7 +118,11 @@ class BaseExampleGenExecutor(
 
   @abc.abstractmethod
   def GetInputSourceToExamplePTransform(self) -> beam.PTransform:
-    """Returns PTransform for converting input source to TF examples.
+    """Returns PTransform for converting input source to records.
+
+    The record is by default, and intended to be, TF examples, but subclassses
+    can serialize any protocol buffer into bytes as output PCollection,
+    so long as the downstream component can consume it.
 
     Note that each input split will be transformed by this function separately.
     For complex use case, consider override 'GenerateExamplesByBeam' instead.
@@ -204,7 +211,12 @@ class BaseExampleGenExecutor(
   def Do(self, input_dict: Dict[Text, List[types.Artifact]],
          output_dict: Dict[Text, List[types.Artifact]],
          exec_properties: Dict[Text, Any]) -> None:
-    """Take input data source and generates TF Example splits.
+    """Take input data source and generates serialized data splits.
+
+    The output is intended to be serialized TF Examples in gzipped TFRecord
+    format, but subclasses can choose to override to write to any serialized
+    records into gzipped TFRecord, so long as downstream component can consume
+    it.
 
     Args:
       input_dict: Input dict from input key to a list of Artifacts. Depends on

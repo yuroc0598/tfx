@@ -33,6 +33,7 @@ from tfx.types import standard_artifacts
 class ExecutorTest(tf.test.TestCase):
 
   def setUp(self):
+    super(ExecutorTest, self).setUp()
     input_data_dir = os.path.join(
         os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'testdata')
 
@@ -45,10 +46,11 @@ class ExecutorTest(tf.test.TestCase):
     with beam.Pipeline() as pipeline:
       examples = (
           pipeline
-          | 'ToTFExample' >> executor._ImportExample(
+          | 'ToSerializedRecord' >> executor._ImportRecord(
               input_dict=self._input_dict,
               exec_properties={},
-              split_pattern='tfrecord/*'))
+              split_pattern='tfrecord/*')
+          | 'ToTFExample' >> beam.Map(tf.train.Example.FromString))
 
       def check_result(got):
         # We use Python assertion here to avoid Beam serialization error in

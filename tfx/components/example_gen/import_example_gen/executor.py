@@ -34,7 +34,7 @@ from tfx.types import artifact_utils
 @beam.ptransform_fn
 @beam.typehints.with_input_types(beam.Pipeline)
 @beam.typehints.with_output_types(tf.train.Example)
-def _ImportExample(  # pylint: disable=invalid-name
+def _ImportRecord(  # pylint: disable=invalid-name
     pipeline: beam.Pipeline,
     input_dict: Dict[Text, List[types.Artifact]],
     exec_properties: Dict[Text, Any],  # pylint: disable=unused-argument
@@ -63,14 +63,12 @@ def _ImportExample(  # pylint: disable=invalid-name
   return (pipeline
           # TODO(jyzhao): support multiple input format.
           | 'ReadFromTFRecord' >>
-          beam.io.ReadFromTFRecord(file_pattern=input_split_pattern)
-          # TODO(jyzhao): consider move serialization out of base example gen.
-          | 'ToTFExample' >> beam.Map(tf.train.Example.FromString))
+          beam.io.ReadFromTFRecord(file_pattern=input_split_pattern))
 
 
 class Executor(BaseExampleGenExecutor):
   """Generic TFX import example gen executor."""
 
   def GetInputSourceToExamplePTransform(self) -> beam.PTransform:
-    """Returns PTransform for importing TF examples."""
-    return _ImportExample
+    """Returns PTransform for importing records."""
+    return _ImportRecord
