@@ -112,7 +112,7 @@ class BaseDriverTest(tf.test.TestCase):
         execution_decision.output_dict['output_data'][0].uri,
         os.path.join(self._pipeline_info.pipeline_root,
                      self._component_info.component_id, 'output_data',
-                     str(self._execution_id)))
+                     str(self._execution_id), base_driver.ARTIFACT_FILE_NAME))
 
   @mock.patch(
       'tfx.components.base.base_driver.BaseDriver.verify_input_artifacts'

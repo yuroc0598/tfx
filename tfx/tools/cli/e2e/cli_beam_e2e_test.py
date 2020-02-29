@@ -288,7 +288,13 @@ class CliBeamEndToEndTest(tf.test.TestCase):
     self._valid_run_and_check(pipeline_name)
 
     # Infer Schema when pipeline runs for the first time.
-    schema_path = os.path.join(os.getcwd(), 'schema.pbtxt')
+    import glob
+    all_files = glob.glob(os.getcwd() + '/*', recursive=True)
+    import absl
+    absl.logging.info('ZZZ: CWD:' + os.getcwd())
+    absl.logging.info('ZZZ: Files:' + str(all_files))
+
+    schema_path = os.path.join(os.getcwd(), 'data', 'schema.pbtxt')
     result = self.runner.invoke(cli_group, [
         'pipeline', 'schema', '--engine', 'beam', '--pipeline_name',
         pipeline_name
