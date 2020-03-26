@@ -33,9 +33,7 @@ efforts building a model to the final touches of deploying in production.
 [Kubeflow](https://www.kubeflow.org/),
 [Tensorboard](https://www.tensorflow.org/guide/summaries_and_tensorboard), and
 [TensorFlow 2.0](https://www.tensorflow.org/versions/r2.0/api_docs/).
-*   Align ML framework support with Kubeflow pipelines.
-*   Extend portability across additional cluster computing frameworks,
-orchestrators, and data representations.
+*   Make TFX more ML framework neutral to enable wider usage.
 
 ##### Performance
 *   Better distributed training support
@@ -44,19 +42,13 @@ orchestrators, and data representations.
 TFX pipeline.
 
 ##### Usability
-*   Complete the support for tensorflow 2.x functionaties, including
-    tf.distribute and Keras without Estimator.
 *   Improving the testing capabilities for OSS developers.
-*   Increased interoperability with Kubeflow Pipelines, with a focus on
-    providing more flexibility from unified DSL and converging on pipeline
-    presentation and orchestration semantics.
+*   Reach feature parity and make it easy to move ML focused pipelines from
+Kubeflow pipelines (KFP) to TFX DSL.
 *   Support for training on continuously arriving data and more advanced
     orchestration semantics.
 
 ##### Education
-*   New template in TFX OSS to ease creation of TFX pipelines.
-*   More pipeline code examples, including DIY orchestrators and custom
-components.
 *   Work with [ML Metadata](https://www.tensorflow.org/tfx/guide/mlmd) to
     publish standard ontology types and show case them through TFX.
 
@@ -68,6 +60,8 @@ accelerate community innovation and collaboration.
 
 #### History
 *   Q1 2020
+    *   Released support for native Keras support in TFX.
+    *   New template to create pipelines in TFX::OSS for on-premise and cloud.
     *   New ComponentSpec and standard artifact types published.
     *   Allow pipelines to be parameterized with `RuntimeParameters`.
     *   Enabled warm-starting for estimator based trainers.
