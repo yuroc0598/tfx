@@ -33,6 +33,7 @@ import tensorflow as tf
 
 from tfx.tools.cli import labels
 from tfx.utils import io_utils
+from tfx.utils import telemetry_utils
 
 
 class BaseHandler(with_metaclass(abc.ABCMeta, object)):
@@ -136,8 +137,8 @@ class BaseHandler(with_metaclass(abc.ABCMeta, object)):
     temp_env[labels.TFX_JSON_EXPORT_PIPELINE_ARGS_PATH] = temp_file
 
     # Mark the SDK environment if not in a template.
-    if 'pipelines.kubeflow.org/pipeline-sdk-type' not in temp_env:
-      temp_env['pipelines.kubeflow.org/pipeline-sdk-type'] = 'tfx-cli'
+    if telemetry_utils.SDK_ENV_LABEL not in temp_env:
+      temp_env[telemetry_utils.SDK_ENV_LABEL] = 'tfx-cli'
 
     # Run dsl with mock environment to store pipeline args in temp_file.
     self._subprocess_call([sys.executable, pipeline_dsl_path], env=temp_env)

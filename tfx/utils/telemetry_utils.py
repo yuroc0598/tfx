@@ -31,6 +31,14 @@ TFX_EXECUTOR = 'tfx_executor'
 _TFX_VERSION = 'tfx_version'
 _TFX_PY_VERSION = 'tfx_py_version'
 
+# The GKE pod label indicating the SDK environment.
+# LINT.IfChange
+SDK_ENV_LABEL = 'pipelines.kubeflow.org/pipeline-sdk-type'
+# LINT.ThenChange(../../tools/cli/handler/base_handler.py)
+
+# The pod label of pipeline unique ID.
+PIPELINE_UUID_LABEL = 'pipelines.kubeflow.org/pipeline-uuid'
+
 # A list of global labels registered so far.
 _labels = {}
 

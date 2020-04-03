@@ -24,6 +24,7 @@ from tfx.experimental.templates.taxi.pipeline import configs
 from tfx.experimental.templates.taxi.pipeline import pipeline
 from tfx.orchestration.kubeflow import kubeflow_dag_runner
 from tfx.proto import trainer_pb2
+from tfx.utils import telemetry_utils
 
 
 # TFX pipeline produces many output files and metadata. All output data will be
@@ -70,7 +71,7 @@ def run():
   )
 
   # Set the SDK type label environment.
-  os.environ[kubeflow_dag_runner.SDK_ENV_LABEL] = 'tfx-template'
+  os.environ[telemetry_utils.SDK_ENV_LABEL] = 'tfx-template'
 
   kubeflow_dag_runner.KubeflowDagRunner(config=runner_config).run(
       pipeline.create_pipeline(
@@ -96,6 +97,8 @@ def run():
           # TODO(step 9): (Optional) Uncomment below to use Cloud AI Platform.
           # ai_platform_serving_args=configs.GCP_AI_PLATFORM_SERVING_ARGS,
       ))
+  # Unset the SDK type label environment.
+  del os.environ[telemetry_utils.SDK_ENV_LABEL]
 
 
 if __name__ == '__main__':
