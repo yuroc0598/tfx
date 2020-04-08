@@ -208,8 +208,12 @@ class TFMAV2BenchmarkBase(test.Benchmark):
         iters=1, wall_time=delta, extras={"num_examples": len(records)})
 
   def _runMetricsAndPlotsEvaluatorManualActuation(self,
-                                                  with_confidence_intervals):
+                                                  with_confidence_intervals,
+                                                  metrics_specs=None):
     """Benchmark MetricsAndPlotsEvaluatorV2 "manually"."""
+    if not metrics_specs:
+      metrics_specs = self._eval_config.metrics_specs
+
     records = self._readDatasetIntoExtracts()
     extracts = []
     for elem in records:
@@ -233,8 +237,7 @@ class TFMAV2BenchmarkBase(test.Benchmark):
     computations, _ = (
         metrics_and_plots_evaluator_v2._filter_and_separate_computations(  # pylint: disable=protected-access
             metric_specs.to_computations(
-                self._eval_config.metrics_specs,
-                eval_config=self._eval_config)))
+                metrics_specs, eval_config=self._eval_config)))
 
     processed = []
     for elem in predict_result:
@@ -305,3 +308,14 @@ class TFMAV2BenchmarkBase(test.Benchmark):
       self):
     self._runMetricsAndPlotsEvaluatorManualActuation(
         with_confidence_intervals=True)
+
+  def benchmarkMetricsAndPlotsEvaluatorBinaryClassificationMetrics(self):
+    self._runMetricsAndPlotsEvaluatorManualActuation(
+        with_confidence_intervals=False,
+        metrics_specs=metric_specs.binary_classification_specs())
+
+  def benchmarkMetricsAndPlotsEvaluatorBinaryClassificationMetricsWithConfidenceIntervals(
+      self):
+    self._runMetricsAndPlotsEvaluatorManualActuation(
+        with_confidence_intervals=True,
+        metrics_specs=metric_specs.binary_classification_specs())
