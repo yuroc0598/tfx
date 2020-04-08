@@ -25,8 +25,10 @@
     dataset.
 *   Added support for hyphens(dash) in addition to underscores in CLI flags.
     Underscores will be supported as well.
-*   Fixed ill-formed underscore in the markdown visualization when running on 
+*   Fixed ill-formed underscore in the markdown visualization when running on
     KFP.
+*   Enable per-component control for caching with enable_cache argument in
+    each component.
 
 ### Deprecations
 
